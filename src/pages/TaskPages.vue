@@ -12,9 +12,15 @@
 					<Tasks :tasks="uncompletedTaks" />
 
 					<!-- show toggle button -->
+					<div class="text-center my-3" v-show="showToggleCompletedBtn">
+						<button class="btn btn-sm btn-secondary" @click="$event => (showCompletedTasks = !showCompletedTasks)">
+							<span v-if="!showCompletedTasks">Show Completed</span>
+							<span v-else>Hide Completed</span>
+						</button>
+					</div>
 
 					<!-- list of completed task -->
-					<Tasks :tasks="completedTaks" />
+					<Tasks :tasks="completedTaks" :show="completedTaskIsVisible && showCompletedTasks" />
 				</div>
 			</div>
 		</div>
@@ -35,4 +41,10 @@ onMounted(async () => {
 
 const uncompletedTaks = computed(() => tasks.value.filter(task => !task.is_completed));
 const completedTaks = computed(() => tasks.value.filter(task => task.is_completed));
+
+// cek apakah ada task yang belum selesai dan ada task yang sudah selesai
+const showToggleCompletedBtn = computed(() => uncompletedTaks.value.length > 0 && completedTaks.value.length > 0);
+
+const completedTaskIsVisible = computed(() => uncompletedTaks.value.length === 0 || completedTaks.value.length > 0);
+const showCompletedTasks = ref(false);
 </script>
