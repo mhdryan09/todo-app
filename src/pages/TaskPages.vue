@@ -45,3 +45,13 @@
 		</div>
 	</main>
 </template>
+
+<script setup>
+import { allTask } from "@/http/task-api";
+import { onMounted } from "vue";
+
+onMounted(async () => {
+	const data = await allTask();
+	console.log(data);
+});
+</script>
