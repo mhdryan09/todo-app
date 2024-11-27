@@ -8,7 +8,7 @@
 
 					<!-- List of tasks -->
 					<!-- <Tasks :tasks="tasks" /> -->
-					<Tasks :tasks="uncompletedTaks" />
+					<Tasks :tasks="uncompletedTaks" @updated="handleUpdatedTask" />
 
 					<!-- show toggle button -->
 					<div class="text-center my-3" v-show="showToggleCompletedBtn">
@@ -29,7 +29,7 @@
 <script setup>
 import Tasks from "@/components/tasks/Tasks.vue";
 import NewTask from "@/components/tasks/NewTask.vue";
-import { allTask, createTask } from "../http/task-api";
+import { allTask, createTask, updateTask } from "../http/task-api";
 import { onMounted, ref, computed } from "vue";
 
 const tasks = ref([]);
@@ -51,5 +51,14 @@ const showCompletedTasks = ref(false);
 const handleAddedTask = async newTask => {
 	const { data: createdTask } = await createTask(newTask);
 	tasks.value.unshift(createdTask.data); // menambahkan task baru ke awal array tasks
+};
+
+const handleUpdatedTask = async task => {
+	const { data: updatedTask } = await updateTask(task.id, {
+		name: task.name,
+	}); // mengupdate task berdasarkan id dan mengirimkan task sebgai payload
+
+	const currentTask = task.value.find(item => item.id === task.id); // mencari task berdasarkan id yang diupdate
+	currentTask.name = updatedTask.data.name; // mengganti nama task yang diupdate
 };
 </script>
