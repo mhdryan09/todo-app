@@ -8,7 +8,7 @@
 
 					<!-- List of tasks -->
 					<!-- <Tasks :tasks="tasks" /> -->
-					<Tasks :tasks="uncompletedTaks" @updated="handleUpdatedTask" @completed="handleCompletedTask" />
+					<Tasks :tasks="uncompletedTaks" @updated="handleUpdatedTask" @completed="handleCompletedTask" @removed="handleRemovedTask" />
 
 					<!-- show toggle button -->
 					<div class="text-center my-3" v-show="showToggleCompletedBtn">
@@ -19,7 +19,7 @@
 					</div>
 
 					<!-- list of completed task -->
-					<Tasks :tasks="completedTaks" :show="completedTaskIsVisible && showCompletedTasks" @updated="handleUpdatedTask" @completed="handleCompletedTask" />
+					<Tasks :tasks="completedTaks" :show="completedTaskIsVisible && showCompletedTasks" @updated="handleUpdatedTask" @completed="handleCompletedTask" @removed="handleRemovedTask" />
 				</div>
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 <script setup>
 import Tasks from "@/components/tasks/Tasks.vue";
 import NewTask from "@/components/tasks/NewTask.vue";
-import { allTask, createTask, updateTask, completeTask } from "../http/task-api";
+import { allTask, createTask, updateTask, completeTask, removeTask } from "../http/task-api";
 import { onMounted, ref, computed } from "vue";
 
 const tasks = ref([]);
@@ -69,5 +69,11 @@ const handleCompletedTask = async task => {
 
 	const currentTask = task.value.find(item => item.id === task.id); // mencari task berdasarkan id yang diupdate
 	currentTask.is_completed = updatedTask.data.is_completed; // mengganti is_completed task yang diupdate
+};
+
+const handleRemovedTask = async task => {
+	await removeTask(task.id);
+	const index = tasks.value.findIndex(item => item.id === task.id); // mencari task berdasarkan id yang dihapus dan menghapus task tersebut
+	tasks.value.splice(index, 1); // menghapus task dari array tasks
 };
 </script>

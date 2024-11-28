@@ -10,7 +10,7 @@
 			</div>
 		</div>
 
-		<TaskActions @edit="$event => (isEdit = true)" v-show="!isEdit" />
+		<TaskActions @edit="$event => (isEdit = true)" v-show="!isEdit" @remove="removeTask" />
 	</li>
 </template>
 
@@ -25,7 +25,7 @@ const props = defineProps({
 const isEdit = ref(false);
 const editingTask = ref(props.task.name);
 
-const emit = defineEmits(["updated", "completed"]);
+const emit = defineEmits(["updated", "completed", "removed"]);
 
 const completedClass = computed(() => (props.task.is_completed ? "completed" : ""));
 
@@ -48,5 +48,11 @@ const undo = () => {
 const markTaskAsCompleted = event => {
 	const updatedTask = { ...props.task, is_completed: !props.task.is_completed }; // buat objek baru dari props.task dan tambahkan properti is_completed dengan nilai input yang diubah
 	emit("completed", updatedTask);
+};
+
+const removeTask = () => {
+	if (confirm("Are you sure?")) {
+		emit("removed", props.task);
+	}
 };
 </script>
