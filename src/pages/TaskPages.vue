@@ -8,7 +8,7 @@
 
 					<!-- List of tasks -->
 					<!-- <Tasks :tasks="tasks" /> -->
-					<Tasks :tasks="uncompletedTaks" @updated="handleUpdatedTask" />
+					<Tasks :tasks="uncompletedTaks" @updated="handleUpdatedTask" @completed="handleCompletedTask" />
 
 					<!-- show toggle button -->
 					<div class="text-center my-3" v-show="showToggleCompletedBtn">
@@ -19,7 +19,7 @@
 					</div>
 
 					<!-- list of completed task -->
-					<Tasks :tasks="completedTaks" :show="completedTaskIsVisible && showCompletedTasks" />
+					<Tasks :tasks="completedTaks" :show="completedTaskIsVisible && showCompletedTasks" @updated="handleUpdatedTask" @completed="handleCompletedTask" />
 				</div>
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 <script setup>
 import Tasks from "@/components/tasks/Tasks.vue";
 import NewTask from "@/components/tasks/NewTask.vue";
-import { allTask, createTask, updateTask } from "../http/task-api";
+import { allTask, createTask, updateTask, completeTask } from "../http/task-api";
 import { onMounted, ref, computed } from "vue";
 
 const tasks = ref([]);
@@ -60,5 +60,14 @@ const handleUpdatedTask = async task => {
 
 	const currentTask = task.value.find(item => item.id === task.id); // mencari task berdasarkan id yang diupdate
 	currentTask.name = updatedTask.data.name; // mengganti nama task yang diupdate
+};
+
+const handleCompletedTask = async task => {
+	const { data: updatedTask } = await completeTask(task.id, {
+		is_completed: task.is_completed,
+	});
+
+	const currentTask = task.value.find(item => item.id === task.id); // mencari task berdasarkan id yang diupdate
+	currentTask.is_completed = updatedTask.data.is_completed; // mengganti is_completed task yang diupdate
 };
 </script>
