@@ -4,7 +4,7 @@
 			<input class="form-check-input mt-0" :class="completedClass" type="checkbox" :checked="task.is_completed" />
 			<div class="ms-2 flex-grow-1" :class="completedClass" title="Double click the text to edit or remove" @dblclick="$event => (isEdit = true)">
 				<div class="relative" v-if="isEdit">
-					<input class="editable-task" type="text" @keyup.esc="$event => (isEdit = false)" v-focus @keyup.enter="updateTask" />
+					<input class="editable-task" type="text" @keyup.esc="undo" v-focus @keyup.enter="updateTask" v-model="editingTask" />
 				</div>
 				<span v-else>{{ task.name }}</span>
 			</div>
@@ -24,6 +24,7 @@ const props = defineProps({
 });
 
 const isEdit = ref(false);
+const editingTask = ref(props.task.name);
 
 const emit = defineEmits(["updated"]);
 
@@ -38,5 +39,10 @@ const updateTask = event => {
 	const updatedTask = { ...props.task, name: event.target.value }; // buat objek baru dari props.task dan tambahkan properti name dengan nilai input yang diubah
 	isEdit.value = false;
 	emit("updated", updatedTask); // kirim ke parent dan mengirimkan updatedTask sebgai payload
+};
+
+const undo = () => {
+	isEdit.value = false; // jika input diubah, maka isEdit akan diubah menjadi false
+	editingTask.value = props.task.name; // mengembalikan nilai props.task.name ke editingTask
 };
 </script>
