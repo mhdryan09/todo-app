@@ -27,16 +27,30 @@
 </template>
 
 <script setup>
+import { onMounted, ref, computed } from "vue";
+import { useTaskStore } from "../stores/task";
+import { storeToRefs } from "pinia";
 import Tasks from "@/components/tasks/Tasks.vue";
 import NewTask from "@/components/tasks/NewTask.vue";
 import { allTask, createTask, updateTask, completeTask, removeTask } from "../http/task-api";
-import { onMounted, ref, computed } from "vue";
 
 const tasks = ref([]);
+const store = useTaskStore();
+// store.$patch({
+// 	task: {
+// 		name: "First task updated using $patch",
+// 		is_completed: true,
+// 	},
+// });
+
+// kita juga bisa lakukan ekstraksi dari store menggunakan storeToRefs
+const { task } = storeToRefs(store);
 
 onMounted(async () => {
 	const { data } = await allTask();
 	tasks.value = data.data;
+	// console.log(store.task);
+	console.log(task.value);
 });
 
 const uncompletedTaks = computed(() => tasks.value.filter(task => !task.is_completed));
