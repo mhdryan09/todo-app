@@ -81,7 +81,3 @@ Bayangkan Anda memiliki sebuah buku catatan (store) yang berisi daftar tugas (ta
 - Mendefinisikan Store: Gunakan defineStore untuk membuat store dengan state awal.
 - Menggunakan Store: Impor store dalam komponen Anda dan gunakan untuk mengelola state.
 - Memperbarui Store: Gunakan metode $patch untuk memperbarui state store.
-
-```
-
-```
